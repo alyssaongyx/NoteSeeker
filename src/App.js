@@ -87,7 +87,7 @@ import SpotifyProfile from './spotifyProfile';
 
 function App() {
   const CLIENT_ID = "1909525b7f8e482ba41cfb6caa151bb5";
-  const REDIRECT_URI = "http://localhost:3000";
+  const REDIRECT_URI = "https://noteseeker69.onrender.com/";
   const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
   const RESPONSE_TYPE = "token";
 
