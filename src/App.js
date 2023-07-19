@@ -83,6 +83,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import axios from 'axios';
+import SpotifyProfile from './spotifyProfile';
 
 function App() {
   const CLIENT_ID = "1909525b7f8e482ba41cfb6caa151bb5";
@@ -189,10 +190,18 @@ function App() {
         )}
 
         {token ? (
-          <form onSubmit={searchArtists}>
-            <input type='text' onChange={(e) => setSearchKey(e.target.value)} />
-            <button type={'submit'}>Search</button>
-          </form>
+           <div>
+           <SpotifyProfile token={token} /> {/* Render the SpotifyProfile component */}
+           <form onSubmit={searchArtists}>
+             <input type="text" onChange={(e) => setSearchKey(e.target.value)} />
+             <button type="submit">Search</button>
+           </form>
+           {renderArtists()}
+         </div>
+          // <form onSubmit={searchArtists}>
+          //   <input type='text' onChange={(e) => setSearchKey(e.target.value)} />
+          //   <button type={'submit'}>Search</button>
+          // </form>
         ) : (
           <h2>Please login</h2>
         )}
