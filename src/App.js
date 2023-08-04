@@ -81,6 +81,11 @@
 // export default App;
 
 import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import  FindTopArtists from './pages/FindTopArtists';
+import FindTopTracks from './pages/FindTopTracks';
+import GetRecommendations from './pages/GetRecommendations';
 import './App.css';
 import axios from 'axios';
 import SearchArtists from './components/SearchArtists';
@@ -89,6 +94,7 @@ import TopArtists from './components/TopArtists';
 import TopTracks from './components/TopTracks';
 import RecommendedSongs from './components/RecommendedSongs';
 import LikedGenres from './components/LikedGenres';
+import NavBar from './pages/NavBar';
 
 function App() {
   const CLIENT_ID = "1909525b7f8e482ba41cfb6caa151bb5";
@@ -104,6 +110,14 @@ function App() {
   const [topTracks, setTopTracks] = useState([]);
   const [topArtists, setTopArtists] = useState([]);
 
+  const logout = () => {
+    console.log("logg");
+    setToken('');
+    window.localStorage.removeItem('token');
+    window.localStorage.removeItem('expiresAt');
+    setTopArtists([]);
+    setTopTracks([]);
+  };
 
   useEffect(() => {
     const getTokenFromStorage = () => {
@@ -160,14 +174,6 @@ function App() {
 
   }, []);
 
-  const logout = () => {
-    setToken('');
-    window.localStorage.removeItem('token');
-    window.localStorage.removeItem('expiresAt');
-    // setTopArtists([]);
-    // setTopTracks([]);
-  };
-
   const renderArtists = () => {
     return artists.map((artist) => (
       <div key={artist.id}>
@@ -177,32 +183,18 @@ function App() {
     ));
   };
 
-  
 
   return (
     <div className='App'>
-      <header className='App-header'>
-        <h1>Spotify React</h1>
-        {!token ? (
-          <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${encodeURIComponent(SCOPES)}`}>Login to Spotify</a>
-        ) : (
-          <button onClick={logout}>Logout</button>
-        )}
-
-        {token ? (
-           <div>
-           <UserProfile token={token} /> 
-           <TopArtists token={token} setTopArtists={setTopArtists} topArtists={topArtists} />
-           <TopTracks token={token} setTopTracks={setTopTracks} topTracks={topTracks}/>
-           <LikedGenres token={token} setGenres={setLikedGenres} />
-           <RecommendedSongs token={token} topArtists={topArtists} topTracks={topTracks} likedGenres={likedGenres}/> 
-           <SearchArtists token={token} setArtists={setArtists} artists={artists} renderArtists={renderArtists}/>
-         </div>
-        ) : (
-          <h2>Please login</h2>
-        )}
-        {/* {renderArtists()} */}
-      </header>
+      <NavBar logout={logout}/>
+      <Routes>
+        <Route path='/' element={<Home token={token} setToken={setToken} logout={logout} setTopArtists={setTopArtists} topArtists={topArtists} setTopTracks={setTopTracks} topTracks={topTracks} setLikedGenres={setLikedGenres} likedGenres={likedGenres} setArtists={setArtists} artists={artists} renderArtists={renderArtists}/>} />
+        <Route path='/FindTopArtists' element={<TopArtists token={token} setTopArtists={setTopArtists} topArtists={topArtists}/>} />
+        <Route path='/FindTopTracks'  element={<TopTracks token={token} setTopTracks={setTopTracks} topTracks={topTracks}/>} />
+        <Route path='/GetRecommendations' element={<RecommendedSongs token={token} topArtists={topArtists} topTracks={topTracks} likedGenres={likedGenres}/>}  />
+        <Route path='/Search' element={<SearchArtists token={token} setArtists={setArtists} artists={artists} renderArtists={renderArtists}/>} />
+        <Route path='/Profile' element={<UserProfile token={token}/>} />
+      </Routes>
     </div>
   );
 }
